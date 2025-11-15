@@ -277,7 +277,7 @@ select option {
 }
 
 
-/* --- New Navigation Footer Styles --- */
+/* --- New Navigation Footer Styles (DESKTOP/DEFAULT) --- */
 .nav-buttons-footer {
     padding-top: 20px;
     margin-top: 20px;
@@ -441,18 +441,14 @@ select option {
         padding: 20px 15px; 
     }
     
-    /* Responsive buttons */
-    .nav-buttons-footer .btn.half
--width {
-        width: 100%; /* Stack back/next on small screens */
-        margin-top: 10px;
-    }
-    .nav-buttons-footer.flex-footer {
-        flex-direction: column;
-        gap: 0;
-    }
-    .nav-buttons-footer .btn.half-width:first-child {
-        margin-top: 0; /* No margin on the first button */
+    /* ❌ REMOVED STACKING: Remove flex-direction: column for nav-buttons-footer.flex-footer */
+    /* ❌ REMOVED STACKING: The desktop flex styles now apply, keeping buttons side-by-side. */
+
+    /* Ensure single back button on History page is full width (still necessary) */
+    .nav-buttons-footer .btn:not(.half-width) {
+        width: 100%;
+        display: block !important;
+        margin-top: 0;
     }
 }
 
@@ -460,4 +456,3 @@ select option {
     .tabs { flex-wrap: wrap; }
     .tab-btn { flex-basis: 48%; margin: 2px 1%; font-size: 0.9rem; }
 }
-
