@@ -423,7 +423,7 @@ select option {
 /* --- Media Queries (Responsiveness) --- */
 @media (max-width: 768px) {
     .container {
-        padding: 25px;
+        padding: 20px; /* Reduced padding here */
         max-width: 95%;
     }
     h1 { font-size: 2rem; }
@@ -441,27 +441,47 @@ select option {
         padding: 20px 15px; 
     }
     
-    /* Ensure single back button on History page is full width (still necessary) */
+    /* Ensure single back button on History page is full width */
     .nav-buttons-footer .btn:not(.half-width) {
         width: 100%;
         margin-top: 0;
     }
 }
 
-/* 🟢 NEW TARGETED MEDIA QUERY FOR SMALL MOBILE SCREENS */
+/* 🟢 AGGRESSIVE TARGETED MEDIA QUERY FOR SMALL MOBILE SCREENS */
 @media (max-width: 420px) {
-    /* Narrow the gap for minimal screens */
-    .nav-buttons-footer.flex-footer {
-        gap: 8px; 
+    .container {
+        padding: 15px; /* Aggressively reduced padding */
     }
-    /* Increase the width slightly to account for the reduced gap */
+
+    /* Reduce gap and make buttons slightly wider to fit */
+    .nav-buttons-footer.flex-footer {
+        gap: 5px; /* Minimum gap */
+        margin-top: 15px; /* Reduced top margin */
+        padding-top: 15px;
+    }
+    
     .nav-buttons-footer .btn.half-width {
-        width: 49.5%;
-        font-size: 0.9rem; /* Slightly smaller font to fit text */
-        padding: 12px 8px; /* Reduce padding */
+        width: 49.8%; /* Maximize button width */
+        font-size: 0.85rem; /* Very small font size to fit text */
+        padding: 10px 5px; /* Minimal padding inside button */
+        /* Ensure the button text doesn't wrap */
+        white-space: nowrap; 
+    }
+    
+    .nav-buttons-footer .btn i {
+        margin-right: 5px; /* Reduced icon margin */
+    }
+    
+    .tabs {
+        padding: 4px; /* Reduced padding on main tabs */
+    }
+    .tab-btn {
+        font-size: 0.85rem; /* Reduced tab font size */
+        padding: 10px 5px;
     }
 }
-/* END NEW TARGETED MEDIA QUERY */
+/* END AGGRESSIVE TARGETED MEDIA QUERY */
 
 
 @media (max-width: 500px) {
