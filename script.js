@@ -1,4 +1,9 @@
-// --- DOM Elements ---
+// --- NEW DOM Elements for Splash Screen ---
+const splashScreen = document.getElementById('splash-screen');
+const appContent = document.getElementById('app-content');
+const startAppButton = document.getElementById('start-app-btn');
+
+// --- DOM Elements (Original) ---
 const balanceDisplay = document.getElementById('balance');
 const incomeDisplay = document.getElementById('total-income');
 const expenseDisplay = document.getElementById('total-expense');
@@ -42,7 +47,29 @@ function updateLocalStorage() {
 }
 
 
-// --- Tab Switching Logic (Simplified as no splash logic needed) ---
+// --- Splash & Tab Switching Logic ---
+
+/**
+ * Initializes the app by hiding the splash screen and showing main content.
+ */
+function initializeApp() {
+    // 1. Hide the splash screen
+    splashScreen.classList.add('page-hidden');
+    
+    // 2. Show the main app content
+    appContent.classList.remove('page-hidden');
+    
+    // 3. Run core app initialization 
+    init();
+    
+    // 4. Ensure the summary page is active
+    switchPage('summary-page');
+}
+
+// Event listener for the Get Started button
+if (startAppButton) {
+    startAppButton.addEventListener('click', initializeApp);
+}
 
 /**
  * Switches the active page content and updates the navigation buttons.
@@ -63,12 +90,13 @@ function switchPage(targetId) {
     // Run specific updates when switching to a page
     if(targetId === 'summary-page' || targetId === 'history-page') {
         updateValues(); 
-        init(); // Re-render history/summary data
+        init(); 
     } else if (targetId === 'charts-page') {
         if (balanceChart) balanceChart.destroy(); 
         const currentIncome = incomeDisplay.innerText.replace(/[$,]/g, '');
         const currentExpense = expenseDisplay.innerText.replace(/[$,-]/g, '');
-        updateBalanceChart(parseFloat(currentIncome) || 0, parseFloat(currentExpense) || 0);
+        // The Chart function expects numbers, not strings from the DOM
+        updateBalanceChart(parseFloat(currentIncome) || 0, parseFloat(currentExpense) || 0); 
     } else if (targetId === 'add-page') {
         dateInput.valueAsDate = new Date(); 
     }
@@ -243,10 +271,8 @@ function updateCategoryBreakdown(totalExpense) {
     });
 }
 
-// 6. Update Income vs Expense Chart (Unchanged)
-function updateBalanceChart(incomeStr, expenseStr) {
-    const income = parseFloat(incomeStr);
-    const expense = parseFloat(expenseStr);
+// --- Chart.js Integration (Your Bar Chart Logic) ---
+function updateBalanceChart(income, expense) {
     const netBalance = income - expense; 
 
     const labels = ['Financial Overview'];
@@ -254,22 +280,6 @@ function updateBalanceChart(incomeStr, expenseStr) {
     if (balanceChart) {
         balanceChart.destroy();
     }
-
-    const handleBarClick = (e) => {
-        const activeElements = balanceChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
-
-        if (activeElements.length > 0) {
-            const clickedDatasetIndex = activeElements[0].datasetIndex;
-            
-            balanceChart.data.datasets.forEach(dataset => {
-                dataset.hidden = true;
-            });
-            
-            balanceChart.data.datasets[clickedDatasetIndex].hidden = false;
-
-            balanceChart.update();
-        }
-    };
 
     if (typeof Chart !== 'undefined' && balanceChartCanvas) {
         balanceChart = new Chart(balanceChartCanvas, {
@@ -306,7 +316,6 @@ function updateBalanceChart(incomeStr, expenseStr) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                onClick: handleBarClick,
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -343,7 +352,6 @@ function updateBalanceChart(incomeStr, expenseStr) {
 }
 
 
-
 // --- Initialization ---
 
 function init() {
@@ -352,8 +360,18 @@ function init() {
     updateValues();
     populateCategoryDatalist();
     loadLastCategory();
-    dateInput.valueAsDate = new Date(); // Set date input default
+    dateInput.valueAsDate = new Date(); 
 }
 
-// ⭐ IMPORTANT: Since the app starts directly on index.html, call init() immediately.
-window.onload = init;
+// ⭐ INITIAL PAGE LOAD LOGIC ⭐
+// Check if the splash screen element exists. If it does, we assume we need to show the splash page 
+// and hide the main app content until the user clicks "Get Started".
+if (splashScreen && appContent) {
+    // Hide the main app on load
+    appContent.classList.add('page-hidden');
+    // Ensure splash is visible (it should be by default due to no 'page-hidden' class in HTML)
+    splashScreen.classList.remove('page-hidden');
+} else {
+    // Fallback: If elements aren't found, assume we're in the app immediately
+    window.onload = init;
+}

@@ -8,6 +8,52 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS specifically for the Splash Page within this single file */
+        .page-hidden { display: none !important; }
+
+        /* Splash Styles copied from your previous code */
+        #splash-page {
+            /* Ensure splash is full height of the container */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh; 
+            text-align: center;
+            padding: 60px 30px;
+        }
+        .splash-content h2 {
+            font-size: 2.5rem;
+            color: var(--heading-color);
+            margin-bottom: 10px;
+            border-left: none;
+            padding-left: 0;
+        }
+        .splash-content .tagline {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+        .features-list {
+            margin: 30px auto;
+            max-width: 400px;
+            text-align: left;
+        }
+        .features-list li {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid var(--balance-color);
+            font-weight: 500;
+        }
+        .features-list li i {
+            margin-right: 15px;
+            color: var(--balance-color);
+        }
+    </style>
 </head>
 <body>
     <div class="background-elements">
@@ -15,91 +61,111 @@
         <div class="glow-sphere sphere-2"></div>
     </div>
 
-    <div class="container glass-main">
+    <div class="container glass-main" id="main-container">
         <h1><i class="fas fa-wallet"></i> Quantum Tracker</h1>
         
-        <nav class="tabs glass-tabs" id="main-nav">
-            <button class="tab-btn active" data-target="summary-page"><i class="fas fa-list-ul"></i> Summary</button>
-            <button class="tab-btn" data-target="charts-page"><i class="fas fa-chart-bar"></i> Analysis</button>
-            <button class="tab-btn" data-target="add-page"><i class="fas fa-plus-circle"></i> New</button>
-            <button class="tab-btn" data-target="history-page"><i class="fas fa-scroll"></i> Transactions</button>
-        </nav>
-
-        <main class="content-wrapper">
-            
-            <section class="page-content active glass-card" id="summary-page">
-                <h2>Financial Summary</h2>
-                <div class="summary-grid">
-                    <div class="summary-box income-box glass-item summary-small">
-                        <h4>Total Income</h4>
-                        <p id="total-income" class="money plus">$0.00</p>
+        <div id="splash-screen">
+            <div id="splash-page">
+                <div class="splash-content">
+                    <h2>Welcome to Quantum Tracker!</h2>
+                    <p class="tagline">Your next-generation personal finance manager.</p>
+                    <div class="features-list">
+                        <ul>
+                            <li><i class="fas fa-hand-holding-usd"></i> Track Income & Expenses</li>
+                            <li><i class="fas fa-chart-pie"></i> Visual Category Analysis</li>
+                            <li><i class="fas fa-history"></i> Comprehensive Transaction History</li>
+                        </ul>
                     </div>
-                    <div class="summary-box expense-box glass-item summary-small">
-                        <h4>Total Expenses</h4>
-                        <p id="total-expense" class="money minus">$0.00</p>
-                    </div>
-                    <div class="summary-box balance-box glass-item balance-large">
-                        <h4>Net Balance</h4>
-                        <p id="balance">$0.00</p>
-                    </div>
+                    <button class="btn glass-btn" id="start-app-btn" style="text-decoration: none; margin-top: 40px;">
+                        Get Started
+                    </button>
                 </div>
+            </div>
+        </div>
+        <div id="app-content" class="page-hidden">
+            <nav class="tabs glass-tabs" id="main-nav">
+                <button class="tab-btn active" data-target="summary-page"><i class="fas fa-list-ul"></i> Summary</button>
+                <button class="tab-btn" data-target="charts-page"><i class="fas fa-chart-bar"></i> Analysis</button>
+                <button class="tab-btn" data-target="add-page"><i class="fas fa-plus-circle"></i> New</button>
+                <button class="tab-btn" data-target="history-page"><i class="fas fa-scroll"></i> Transactions</button>
+            </nav>
+            
+            <main class="content-wrapper">
                 
-                <div class="category-breakdown glass-item">
-                    <h3>Expense Breakdown by Category</h3>
-                    <ul id="category-list" class="breakdown-list">
-                        <li class="empty-state">No expenses recorded yet.</li>
-                    </ul>
-                </div>
-            </section>
-            
-            <section class="page-content glass-card" id="charts-page">
-                <h2>Income vs. Expense Distribution</h2>
-                <div class="chart-container glass-item">
-                    <canvas id="balance-chart"></canvas>
-                </div>
-            </section>
-            
-            <section class="page-content glass-card" id="add-page">
-                <h2>Record New Transaction</h2>
-                <form id="transaction-form">
-                    <div class="form-control">
-                        <label for="text">Description</label>
-                        <input type="text" id="text" placeholder="e.g., Groceries, Freelance Payment" required />
-                    </div>
-
-                    <div class="form-control">
-                        <label for="category">Category (Type or Select)</label>
-                        <input type="text" id="category" list="category-options" placeholder="e.g., Food, Rent, Custom Project" />
-                        <datalist id="category-options">
-                            <option value="Income">
-                            <option value="Food">
-                            <option value="Travel">
-                            <option value="Utilities">
-                            <option value="Entertainment">
-                            <option value="Other">
-                            <option value="Uncategorized">
-                        </datalist>
-                    </div>
-                    <div class="form-control">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" required />
+                <section class="page-content active glass-card" id="summary-page">
+                    <h2>Financial Summary</h2>
+                    <div class="summary-grid">
+                        <div class="summary-box income-box glass-item summary-small">
+                            <h4>Total Income</h4>
+                            <p id="total-income" class="money plus">$0.00</p>
+                        </div>
+                        <div class="summary-box expense-box glass-item summary-small">
+                            <h4>Total Expenses</h4>
+                            <p id="total-expense" class="money minus">$0.00</p>
+                        </div>
+                        <div class="summary-box balance-box glass-item balance-large">
+                            <h4>Net Balance</h4>
+                            <p id="balance">$0.00</p>
+                        </div>
                     </div>
                     
-                    <div class="form-control">
-                        <label for="amount">Amount (+Income / -Expense)</label>
-                        <input type="number" id="amount" placeholder="e.g., 2000 or -50.50" required />
+                    <div class="category-breakdown glass-item">
+                        <h3>Expense Breakdown by Category</h3>
+                        <ul id="category-list" class="breakdown-list">
+                            <li class="empty-state">No expenses recorded yet.</li>
+                        </ul>
                     </div>
-                    <button class="btn glass-btn" type="submit">Save Transaction</button>
-                </form>
-            </section>
+                </section>
+                
+                <section class="page-content glass-card" id="charts-page">
+                    <h2>Income vs. Expense Distribution</h2>
+                    <div class="chart-container glass-item">
+                        <canvas id="balance-chart"></canvas>
+                    </div>
+                </section>
+                
+                <section class="page-content glass-card" id="add-page">
+                    <h2>Record New Transaction</h2>
+                    <form id="transaction-form">
+                        <div class="form-control">
+                            <label for="text">Description</label>
+                            <input type="text" id="text" placeholder="e.g., Groceries, Freelance Payment" required />
+                        </div>
 
-            <section class="page-content glass-card" id="history-page">
-                <h2>All Transactions</h2>
-                <ul id="list" class="transaction-list">
+                        <div class="form-control">
+                            <label for="category">Category (Type or Select)</label>
+                            <input type="text" id="category" list="category-options" placeholder="e.g., Food, Rent, Custom Project" />
+                            <datalist id="category-options">
+                                <option value="Income">
+                                <option value="Food">
+                                <option value="Travel">
+                                <option value="Utilities">
+                                <option value="Entertainment">
+                                <option value="Other">
+                                <option value="Uncategorized">
+                            </datalist>
+                        </div>
+                        <div class="form-control">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required />
+                        </div>
+                        
+                        <div class="form-control">
+                            <label for="amount">Amount (+Income / -Expense)</label>
+                            <input type="number" id="amount" placeholder="e.g., 2000 or -50.50" required />
+                        </div>
+                        <button class="btn glass-btn" type="submit">Save Transaction</button>
+                    </form>
+                </section>
+
+                <section class="page-content glass-card" id="history-page">
+                    <h2>All Transactions</h2>
+                    <ul id="list" class="transaction-list">
                     </ul>
-            </section>
-        </main>
-    </div>
+                </section>
+            </main>
+        </div>
+        </div>
 
     <script src="script.js"></script>
 </body>
