@@ -441,16 +441,28 @@ select option {
         padding: 20px 15px; 
     }
     
-    /* ❌ REMOVED STACKING: Remove flex-direction: column for nav-buttons-footer.flex-footer */
-    /* ❌ REMOVED STACKING: The desktop flex styles now apply, keeping buttons side-by-side. */
-
     /* Ensure single back button on History page is full width (still necessary) */
     .nav-buttons-footer .btn:not(.half-width) {
         width: 100%;
-        display: block !important;
         margin-top: 0;
     }
 }
+
+/* 🟢 NEW TARGETED MEDIA QUERY FOR SMALL MOBILE SCREENS */
+@media (max-width: 420px) {
+    /* Narrow the gap for minimal screens */
+    .nav-buttons-footer.flex-footer {
+        gap: 8px; 
+    }
+    /* Increase the width slightly to account for the reduced gap */
+    .nav-buttons-footer .btn.half-width {
+        width: 49.5%;
+        font-size: 0.9rem; /* Slightly smaller font to fit text */
+        padding: 12px 8px; /* Reduce padding */
+    }
+}
+/* END NEW TARGETED MEDIA QUERY */
+
 
 @media (max-width: 500px) {
     .tabs { flex-wrap: wrap; }
