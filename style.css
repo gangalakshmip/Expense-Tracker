@@ -441,17 +441,27 @@ select option {
         padding: 20px 15px; 
     }
     
-    /* Responsive buttons */
+    /* 🟢 FIX: Navigation Button Stack and Visibility */
+    .nav-buttons-footer .btn {
+        /* Force display block on mobile to stack the buttons */
+        display: block !important; 
+        width: 100%;
+        margin-top: 10px; /* Add margin between stacked buttons */
+        padding: 14px;
+    }
+    
     .nav-buttons-footer .btn.half-width {
-        width: 100%; /* Stack back/next on small screens */
         margin-top: 10px;
     }
+
     .nav-buttons-footer.flex-footer {
         flex-direction: column;
         gap: 0;
     }
-    .nav-buttons-footer .btn.half-width:first-child {
-        margin-top: 0; /* No margin on the first button */
+    
+    /* Remove top margin from the first button in the stack */
+    .nav-buttons-footer .btn:first-child {
+        margin-top: 0;
     }
 }
 
