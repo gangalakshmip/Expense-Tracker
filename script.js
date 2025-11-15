@@ -12,12 +12,6 @@ const categoryList = document.getElementById('category-list');
 const balanceChartCanvas = document.getElementById('balance-chart');
 const categoryDatalist = document.getElementById('category-options');
 
-// ⭐ Splash/Nav Elements ⭐
-const splashPage = document.getElementById('splash-page');
-const startAppButton = document.getElementById('start-app-btn');
-const mainNav = document.getElementById('main-nav'); 
-
-
 // Tab Navigation 
 const tabButtons = document.querySelectorAll('.tab-btn');
 const pageContents = document.querySelectorAll('.page-content');
@@ -48,7 +42,7 @@ function updateLocalStorage() {
 }
 
 
-// --- Tab & Splash Switching Logic ---
+// --- Tab Switching Logic (Simplified as no splash logic needed) ---
 
 /**
  * Switches the active page content and updates the navigation buttons.
@@ -60,12 +54,10 @@ function switchPage(targetId) {
 
     document.getElementById(targetId).classList.add('active');
     
-    // Only attempt to find and activate the button if it's one of the main tabs
-    if (targetId !== 'splash-page') {
-        const targetButton = document.querySelector(`[data-target="${targetId}"]`);
-        if (targetButton) {
-            targetButton.classList.add('active');
-        }
+    // Activate the corresponding button
+    const targetButton = document.querySelector(`[data-target="${targetId}"]`);
+    if (targetButton) {
+        targetButton.classList.add('active');
     }
     
     // Run specific updates when switching to a page
@@ -73,38 +65,16 @@ function switchPage(targetId) {
         updateValues(); 
         init(); // Re-render history/summary data
     } else if (targetId === 'charts-page') {
-        // Destroy and recreate chart to prevent drawing issues when tab changes
         if (balanceChart) balanceChart.destroy(); 
         const currentIncome = incomeDisplay.innerText.replace(/[$,]/g, '');
         const currentExpense = expenseDisplay.innerText.replace(/[$,-]/g, '');
         updateBalanceChart(parseFloat(currentIncome) || 0, parseFloat(currentExpense) || 0);
     } else if (targetId === 'add-page') {
-        dateInput.valueAsDate = new Date(); // Reset date to today on form load
+        dateInput.valueAsDate = new Date(); 
     }
 }
 
-/**
- * Initial function to transition from the splash page to the main app.
- */
-function initializeApp() {
-    // 1. Hide the splash screen
-    splashPage.classList.remove('active');
-    
-    // 2. Show the main navigation bar
-    mainNav.style.display = 'flex';
-    
-    // 3. Switch to the default starting page (Summary)
-    switchPage('summary-page');
-    
-    // 4. Run core app initialization (load data, populate history, etc.)
-    init();
-}
-
-// Event Listeners for tabs and the 'Get Started' button
-if (startAppButton) {
-    startAppButton.addEventListener('click', initializeApp);
-}
-
+// Event Listeners for tabs 
 tabButtons.forEach(button => {
     button.addEventListener('click', (e) => {
         const target = e.currentTarget.dataset.target;
@@ -124,7 +94,6 @@ function populateCategoryDatalist() {
     const uniqueUsedCategories = new Set();
     
     transactions.forEach(t => {
-        // Only include non-Income categories from past transactions
         if (t.category && t.category.trim() !== '' && t.category.toLowerCase() !== 'income') {
             uniqueUsedCategories.add(t.category);
         }
@@ -147,9 +116,6 @@ function generateID() {
     return Math.floor(Math.random() * 100000000);
 }
 
-/**
- * Adds a new transaction to the array.
- */
 function addTransaction(e) {
     e.preventDefault();
 
@@ -157,7 +123,6 @@ function addTransaction(e) {
     const amount = parseFloat(amountInput.value);
     const date = dateInput.value;
     
-    // Determine category: default to 'Income' if positive, 'Uncategorized' if negative and blank
     let category = categoryInput.value.trim();
     if (!category) {
         category = amount > 0 ? 'Income' : 'Uncategorized';
@@ -178,8 +143,8 @@ function addTransaction(e) {
     };
 
     transactions.push(transaction);
-    updateLocalStorage(); // Save first
-    init(); // Re-render everything
+    updateLocalStorage(); 
+    init(); 
     
     // Switch to history page after saving
     switchPage('history-page'); 
@@ -194,31 +159,21 @@ function addTransaction(e) {
 form.addEventListener('submit', addTransaction);
 
 
-/**
- * Deletes a transaction by ID.
- * @param {number} id - The ID of the transaction to delete.
- */
-window.removeTransaction = function(id) { // Exposed to global scope for inline onclick
+window.removeTransaction = function(id) { 
     transactions = transactions.filter(transaction => transaction.id !== id);
     updateLocalStorage();
-    init(); // Re-initialize to update all displays
+    init(); 
 }
 
 
 // --- DOM Manipulation ---
 
-/**
- * Creates the DOM element for a single transaction in the history list.
- * @param {Object} transaction - The transaction object.
- */
 function addTransactionDOM(transaction) {
     const sign = transaction.amount < 0 ? '-' : '+';
     const item = document.createElement('li');
 
-    // Add class based on value
     item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
     
-    // Format date for display
     const formattedDate = new Date(transaction.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
     item.innerHTML = `
@@ -233,9 +188,6 @@ function addTransactionDOM(transaction) {
     list.prepend(item);
 }
 
-/**
- * Updates the balance, income, and expense displays.
- */
 function updateValues() {
     const amounts = transactions.map(transaction => transaction.amount);
     
@@ -247,13 +199,12 @@ function updateValues() {
 
     const expense = amounts
             .filter(item => item < 0)
-            .reduce((acc, item) => (acc += item), 0) * -1; // Positive value for display
+            .reduce((acc, item) => (acc += item), 0) * -1; 
 
     balanceDisplay.innerText = `$${total.toFixed(2)}`;
     incomeDisplay.innerText = `$${income.toFixed(2)}`;
     expenseDisplay.innerText = `-$${expense.toFixed(2)}`;
     
-    // Update balance color dynamically
     if (total >= 0) {
         balanceDisplay.style.color = 'var(--balance-color)';
     } else {
@@ -263,10 +214,6 @@ function updateValues() {
     updateCategoryBreakdown(expense);
 }
 
-/**
- * Updates the expense breakdown list on the summary page.
- * @param {number} totalExpense - The total expense amount as a number.
- */
 function updateCategoryBreakdown(totalExpense) {
     categoryList.innerHTML = '';
     
@@ -275,7 +222,6 @@ function updateCategoryBreakdown(totalExpense) {
         return;
     }
 
-    // Filter and group expenses by category
     const expenseCategories = transactions
         .filter(t => t.amount < 0)
         .reduce((acc, t) => {
@@ -285,7 +231,6 @@ function updateCategoryBreakdown(totalExpense) {
             return acc;
         }, {});
 
-    // Create list items
     Object.entries(expenseCategories).forEach(([category, amount]) => {
         const percentage = ((amount / totalExpense) * 100).toFixed(1);
         const listItem = document.createElement('li');
@@ -298,93 +243,117 @@ function updateCategoryBreakdown(totalExpense) {
     });
 }
 
+// 6. Update Income vs Expense Chart (Unchanged)
+function updateBalanceChart(incomeStr, expenseStr) {
+    const income = parseFloat(incomeStr);
+    const expense = parseFloat(expenseStr);
+    const netBalance = income - expense; 
 
-// --- Chart.js Integration ---
-
-/**
- * Initializes or updates the Chart.js balance chart (Doughnut).
- * @param {number} income - Total income amount.
- * @param {number} expense - Total expense amount.
- */
-function updateBalanceChart(income, expense) {
+    const labels = ['Financial Overview'];
+    
     if (balanceChart) {
-        balanceChart.destroy(); // Destroy previous instance if it exists
+        balanceChart.destroy();
     }
-    
-    const ctx = balanceChartCanvas.getContext('2d');
-    
-    balanceChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Total Income', 'Total Expenses'],
-            datasets: [{
-                data: [income, expense],
-                backgroundColor: [
-                    '#4CAF50', // Success color (Green)
-                    '#FF5252'  // Danger color (Red)
-                ],
-                hoverBackgroundColor: [
-                    '#5cb860',
-                    '#ff6666'
-                ],
-                borderWidth: 1,
-                borderColor: 'rgba(255, 255, 255, 0.2)'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: 'var(--text-color)',
-                        font: { family: 'Inter', size: 14, weight: '600' }
+
+    const handleBarClick = (e) => {
+        const activeElements = balanceChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+
+        if (activeElements.length > 0) {
+            const clickedDatasetIndex = activeElements[0].datasetIndex;
+            
+            balanceChart.data.datasets.forEach(dataset => {
+                dataset.hidden = true;
+            });
+            
+            balanceChart.data.datasets[clickedDatasetIndex].hidden = false;
+
+            balanceChart.update();
+        }
+    };
+
+    if (typeof Chart !== 'undefined' && balanceChartCanvas) {
+        balanceChart = new Chart(balanceChartCanvas, {
+            type: 'bar', 
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Income',
+                        data: [income],
+                        backgroundColor: '#4CAF50', 
+                        borderColor: 'rgba(255, 255, 255, 0.8)', 
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    },
+                    {
+                        label: 'Total Expenses',
+                        data: [expense], 
+                        backgroundColor: '#FF5252',  
+                        borderColor: 'rgba(255, 255, 255, 0.8)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    },
+                    {
+                        label: 'Net Balance',
+                        data: [netBalance],
+                        backgroundColor: '#2196F3', 
+                        borderColor: 'rgba(255, 255, 255, 0.8)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                onClick: handleBarClick,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: 'white', font: { size: 14, family: 'Inter' } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                label += `$${context.parsed.y.toFixed(2)}`;
+                                return label;
+                            }
+                        }
                     }
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed !== null) {
-                                label += '$' + context.parsed.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                            }
-                            return label;
-                        }
+                scales: {
+                    x: {
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y: {
+                        beginAtZero: false, 
+                        ticks: {
+                            color: 'white', 
+                            callback: function(value) { return '$' + value.toFixed(0); }
+                        },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
                     }
                 }
             }
-        }
-    });
+        });
+    } 
 }
+
 
 
 // --- Initialization ---
 
-/**
- * Main initialization function. Clears history list, adds all transactions, and updates summary.
- */
 function init() {
-    list.innerHTML = ''; // Clear history list
+    list.innerHTML = ''; 
     transactions.forEach(addTransactionDOM);
     updateValues();
     populateCategoryDatalist();
     loadLastCategory();
+    dateInput.valueAsDate = new Date(); // Set date input default
 }
 
-// Initial check: if the main navigation is visible, the splash screen was bypassed 
-// (e.g., on refresh after first load, or if 'active' was left on summary page).
-// If the app is starting fresh (splash page is active), init() is called by initializeApp().
-if (splashPage && !splashPage.classList.contains('active')) {
-    // If the splash page is NOT active on load, it means we are directly showing the app.
-    mainNav.style.display = 'flex';
-    init();
-} else if (!splashPage) {
-     // Fallback if splash page was accidentally removed from HTML
-    mainNav.style.display = 'flex';
-    init();
-}
+// ⭐ IMPORTANT: Since the app starts directly on index.html, call init() immediately.
+window.onload = init;
