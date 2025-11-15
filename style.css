@@ -277,6 +277,35 @@ select option {
 }
 
 
+/* --- New Navigation Footer Styles --- */
+.nav-buttons-footer {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-buttons-footer.flex-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px; /* Space between the two buttons */
+}
+
+/* Ensure the half-width buttons are styled correctly */
+.nav-buttons-footer .btn.half-width {
+    width: 49%; /* Slightly less than half to account for gap */
+    margin-top: 0; /* Remove the standard button margin-top */
+    font-size: 0.95rem; /* Slightly smaller text */
+    padding: 14px;
+}
+
+/* Ensure the full-width buttons without flex are styled correctly */
+.nav-buttons-footer .btn:not(.half-width) {
+    width: 100%;
+    margin-top: 0;
+}
+/* End New Navigation Footer Styles */
+
+
 /* --- Transaction List (History Page) --- */
 .transaction-list { list-style: none; }
 .transaction-list li { 
@@ -410,6 +439,19 @@ select option {
     }
     .summary-box.balance-large {
         padding: 20px 15px; 
+    }
+    
+    /* Responsive buttons */
+    .nav-buttons-footer .btn.half-width {
+        width: 100%; /* Stack back/next on small screens */
+        margin-top: 10px;
+    }
+    .nav-buttons-footer.flex-footer {
+        flex-direction: column;
+        gap: 0;
+    }
+    .nav-buttons-footer .btn.half-width:first-child {
+        margin-top: 0; /* No margin on the first button */
     }
 }
 

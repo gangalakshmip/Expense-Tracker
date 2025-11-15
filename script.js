@@ -27,6 +27,75 @@ let transactions = localStorageTransactions !== null ? localStorageTransactions 
 let balanceChart; // Chart instance for Income vs Expense
 
 
+// --- Page Flow Management ---
+const pageOrder = ['summary-page', 'charts-page', 'add-page', 'history-page'];
+
+/**
+ * Navigates to the next or previous page in the defined flow.
+ * @param {string} direction - 'next' or 'back'.
+ * @param {string} currentPageId - The ID of the current page.
+ */
+window.navigate = function(direction, currentPageId) {
+    const currentIndex = pageOrder.indexOf(currentPageId);
+    let newIndex = -1;
+
+    if (direction === 'next' && currentIndex < pageOrder.length - 1) {
+        newIndex = currentIndex + 1;
+    } else if (direction === 'back') {
+        if (currentPageId === 'summary-page') {
+            // GO BACK TO SPLASH SCREEN
+            showSplashScreen();
+            return; 
+        } else if (currentIndex > 0) {
+            newIndex = currentIndex - 1;
+        }
+    }
+
+    if (newIndex !== -1) {
+        const targetId = pageOrder[newIndex];
+        // Switch both the content page and the corresponding tab button
+        switchPage(targetId);
+    }
+}
+
+/**
+ * Updates the visibility and text of the back/next buttons for the current page.
+ * This is called every time a page switch occurs.
+ * @param {string} currentPageId - The ID of the currently active page.
+ */
+function updatePageNavigation(currentPageId) {
+    const currentIndex = pageOrder.indexOf(currentPageId);
+    
+    const backBtn = document.querySelector(`#${currentPageId} .nav-back-btn`);
+    const nextBtn = document.querySelector(`#${currentPageId} .nav-next-btn`);
+
+    // Reset button visibility for safety
+    if (backBtn) backBtn.style.display = 'none';
+    if (nextBtn) nextBtn.style.display = 'none';
+
+    if (currentIndex !== -1) {
+        // Show Next button if not the last page
+        if (currentIndex < pageOrder.length - 1 && nextBtn) {
+            // Summary, Analysis, Add page use flex
+            nextBtn.style.display = 'inline-block'; 
+        }
+        
+        // Show Back button if not the first page, OR if it's the Summary Page (to go back to Splash)
+        if (currentIndex > 0 || currentPageId === 'summary-page') {
+             if (backBtn) {
+                // History page back button is full width (block)
+                if (currentPageId === 'history-page') {
+                    backBtn.style.display = 'block'; 
+                } else {
+                    // Summary, Analysis, and Add page back buttons are half width (inline-block)
+                    backBtn.style.display = 'inline-block';
+                }
+             }
+        }
+    }
+}
+
+
 // --- Persistence Logic ---
 
 function saveLastCategory(categoryValue) {
@@ -48,6 +117,18 @@ function updateLocalStorage() {
 
 
 // --- Splash & Tab Switching Logic ---
+
+/**
+ * Hides the main app and shows the splash screen.
+ */
+function showSplashScreen() {
+    appContent.classList.add('page-hidden');
+    splashScreen.classList.remove('page-hidden');
+    
+    // Deactivate all tab buttons when returning to splash
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    pageContents.forEach(page => page.classList.remove('active'));
+}
 
 /**
  * Initializes the app by hiding the splash screen and showing main content.
@@ -87,6 +168,9 @@ function switchPage(targetId) {
         targetButton.classList.add('active');
     }
     
+    // IMPORTANT: Update the back/next buttons after switching
+    updatePageNavigation(targetId);
+
     // Run specific updates when switching to a page
     if(targetId === 'summary-page' || targetId === 'history-page') {
         updateValues(); 
@@ -364,12 +448,10 @@ function init() {
 }
 
 // ⭐ INITIAL PAGE LOAD LOGIC ⭐
-// Check if the splash screen element exists. If it does, we assume we need to show the splash page 
-// and hide the main app content until the user clicks "Get Started".
 if (splashScreen && appContent) {
     // Hide the main app on load
     appContent.classList.add('page-hidden');
-    // Ensure splash is visible (it should be by default due to no 'page-hidden' class in HTML)
+    // Ensure splash is visible
     splashScreen.classList.remove('page-hidden');
 } else {
     // Fallback: If elements aren't found, assume we're in the app immediately

@@ -93,75 +93,112 @@
             <main class="content-wrapper">
                 
                 <section class="page-content active glass-card" id="summary-page">
-                    <h2>Financial Summary</h2>
-                    <div class="summary-grid">
-                        <div class="summary-box income-box glass-item summary-small">
-                            <h4>Total Income</h4>
-                            <p id="total-income" class="money plus">$0.00</p>
+                    <div class="page-content-wrapper">
+                        <h2>Financial Summary</h2>
+                        <div class="summary-grid">
+                            <div class="summary-box income-box glass-item summary-small">
+                                <h4>Total Income</h4>
+                                <p id="total-income" class="money plus">$0.00</p>
+                            </div>
+                            <div class="summary-box expense-box glass-item summary-small">
+                                <h4>Total Expenses</h4>
+                                <p id="total-expense" class="money minus">$0.00</p>
+                            </div>
+                            <div class="summary-box balance-box glass-item balance-large">
+                                <h4>Net Balance</h4>
+                                <p id="balance">$0.00</p>
+                            </div>
                         </div>
-                        <div class="summary-box expense-box glass-item summary-small">
-                            <h4>Total Expenses</h4>
-                            <p id="total-expense" class="money minus">$0.00</p>
-                        </div>
-                        <div class="summary-box balance-box glass-item balance-large">
-                            <h4>Net Balance</h4>
-                            <p id="balance">$0.00</p>
+                        
+                        <div class="category-breakdown glass-item">
+                            <h3>Expense Breakdown by Category</h3>
+                            <ul id="category-list" class="breakdown-list">
+                                <li class="empty-state">No expenses recorded yet.</li>
+                            </ul>
                         </div>
                     </div>
-                    
-                    <div class="category-breakdown glass-item">
-                        <h3>Expense Breakdown by Category</h3>
-                        <ul id="category-list" class="breakdown-list">
-                            <li class="empty-state">No expenses recorded yet.</li>
-                        </ul>
+                    <div class="nav-buttons-footer flex-footer">
+                        <button class="btn glass-btn nav-back-btn half-width" onclick="navigate('back', 'summary-page')">
+                            <i class="fas fa-arrow-left"></i> Home
+                        </button>
+                        <button class="btn glass-btn nav-next-btn half-width" onclick="navigate('next', 'summary-page')">
+                            Analysis <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </section>
                 
                 <section class="page-content glass-card" id="charts-page">
-                    <h2>Income vs. Expense Distribution</h2>
-                    <div class="chart-container glass-item">
-                        <canvas id="balance-chart"></canvas>
+                    <div class="page-content-wrapper">
+                        <h2>Income vs. Expense Distribution</h2>
+                        <div class="chart-container glass-item">
+                            <canvas id="balance-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="nav-buttons-footer flex-footer">
+                        <button class="btn glass-btn nav-back-btn half-width" onclick="navigate('back', 'charts-page')">
+                            <i class="fas fa-arrow-left"></i> Summary
+                        </button>
+                        <button class="btn glass-btn nav-next-btn half-width" onclick="navigate('next', 'charts-page')">
+                            New Transaction <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </section>
                 
                 <section class="page-content glass-card" id="add-page">
-                    <h2>Record New Transaction</h2>
-                    <form id="transaction-form">
-                        <div class="form-control">
-                            <label for="text">Description</label>
-                            <input type="text" id="text" placeholder="e.g., Groceries, Freelance Payment" required />
-                        </div>
+                    <div class="page-content-wrapper">
+                        <h2>Record New Transaction</h2>
+                        <form id="transaction-form">
+                            <div class="form-control">
+                                <label for="text">Description</label>
+                                <input type="text" id="text" placeholder="e.g., Groceries, Freelance Payment" required />
+                            </div>
 
-                        <div class="form-control">
-                            <label for="category">Category (Type or Select)</label>
-                            <input type="text" id="category" list="category-options" placeholder="e.g., Food, Rent, Custom Project" />
-                            <datalist id="category-options">
-                                <option value="Income">
-                                <option value="Food">
-                                <option value="Travel">
-                                <option value="Utilities">
-                                <option value="Entertainment">
-                                <option value="Other">
-                                <option value="Uncategorized">
-                            </datalist>
-                        </div>
-                        <div class="form-control">
-                            <label for="date">Date</label>
-                            <input type="date" id="date" required />
-                        </div>
-                        
-                        <div class="form-control">
-                            <label for="amount">Amount (+Income / -Expense)</label>
-                            <input type="number" id="amount" placeholder="e.g., 2000 or -50.50" required />
-                        </div>
-                        <button class="btn glass-btn" type="submit">Save Transaction</button>
-                    </form>
+                            <div class="form-control">
+                                <label for="category">Category (Type or Select)</label>
+                                <input type="text" id="category" list="category-options" placeholder="e.g., Food, Rent, Custom Project" />
+                                <datalist id="category-options">
+                                    <option value="Income">
+                                    <option value="Food">
+                                    <option value="Travel">
+                                    <option value="Utilities">
+                                    <option value="Entertainment">
+                                    <option value="Other">
+                                    <option value="Uncategorized">
+                                </datalist>
+                            </div>
+                            <div class="form-control">
+                                <label for="date">Date</label>
+                                <input type="date" id="date" required />
+                            </div>
+                            
+                            <div class="form-control">
+                                <label for="amount">Amount (+Income / -Expense)</label>
+                                <input type="number" id="amount" placeholder="e.g., 2000 or -50.50" required />
+                            </div>
+                            <button class="btn glass-btn" type="submit">Save Transaction</button>
+                        </form>
+                    </div>
+                    <div class="nav-buttons-footer flex-footer">
+                        <button class="btn glass-btn nav-back-btn half-width" onclick="navigate('back', 'add-page')">
+                            <i class="fas fa-arrow-left"></i> Analysis
+                        </button>
+                        <button class="btn glass-btn nav-next-btn half-width" onclick="navigate('next', 'add-page')">
+                            History <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </section>
 
                 <section class="page-content glass-card" id="history-page">
-                    <h2>All Transactions</h2>
-                    <ul id="list" class="transaction-list">
-                    </ul>
+                    <div class="page-content-wrapper">
+                        <h2>All Transactions</h2>
+                        <ul id="list" class="transaction-list">
+                        </ul>
+                    </div>
+                    <div class="nav-buttons-footer">
+                        <button class="btn glass-btn nav-back-btn" onclick="navigate('back', 'history-page')">
+                            <i class="fas fa-arrow-left"></i> New Transaction
+                        </button>
+                    </div>
                 </section>
             </main>
         </div>
