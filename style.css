@@ -1,3 +1,67 @@
+/* Add this to your style.css, perhaps near the beginning or end of the file. */
+
+/* --- Splash Page Specific Styles --- */
+#splash-page {
+    text-align: center;
+    padding: 60px 30px; /* More padding for a central focus */
+    display: block; /* Ensure it starts visible as the active page */
+}
+
+.splash-content h2 {
+    font-size: 2.5rem;
+    color: var(--heading-color);
+    margin-bottom: 10px;
+    border-left: none; /* Override the border-left from the general h2 */
+    padding-left: 0;
+}
+
+.splash-content .tagline {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+.features-list {
+    margin: 30px auto;
+    max-width: 400px;
+    text-align: left;
+}
+
+.features-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.features-list li {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border-left: 4px solid var(--balance-color);
+    font-weight: 500;
+}
+
+.features-list li i {
+    margin-right: 15px;
+    color: var(--balance-color);
+}
+
+/* Ensure the button is styled correctly using the existing .btn and .glass-btn styles */
+#start-app-btn {
+    margin-top: 40px;
+}
+
+/* General Page Content update for clarity. The old `active` class was on summary-page. */
+.page-content { display: none; padding: 15px 0; }
+/* The splash-page is the initial active one in HTML */
+.page-content.active { display: block; }
+
+/* You need to make sure your main navigation bar is hidden initially */
+/* This is done via inline style in the HTML, but can be managed here too: */
+/* #main-nav { display: none; } */ 
+/* We are using inline style in HTML for simplicity in this case */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
